@@ -14,6 +14,9 @@ let kananImg = "https://i.ytimg.com/vi/C1a01e3GWv4/mqdefault.jpg";
 let kiriImg = "https://i.pinimg.com/564x/c3/0a/29/c30a297995070d6e3eb78ef88445d389.jpg";
 var scoreKanan = 0 ;
 var scoreKiri = 0;
+
+var ifKiri = "ml";
+var ifkanan = "ff";
 $(document).ready(() => {
     $('#connectButton').click(connect);
     $('#uniqueIdInput').on('keyup', function (e) {
@@ -76,9 +79,9 @@ function addChatItem(color, data, text, summarize) {
         scrollTop: container[0].scrollHeight
     }, 400);
 
-    if (text.includes("join")) {
+    if (text.toLowerCase().includes(ifKiri)) {
         totalKiri += 1;
-    } else if (text.includes("like")) {
+    } else if (text.toLowerCase().includes(ifkanan)) {
         totalKanan += 1;
     }
     if (totalKanan > 0 || totalKiri > 0) {
