@@ -22,9 +22,58 @@ setInterval(() => {
 
 const request = require('request');
 
-function printChat(name, chat){
+function printChat(name, chat, pp){
     let options = {
-        uri: "http://[::1]:8000/print-chat",
+        uri: "http://[::1]:8000/print-chat?name="+name+"&chat="+chat+"&profile="+pp,
+        method: 'GET',
+    
+    };
+    request(options, function (error, response, body) {
+        if (error) {
+            console.error("httpRequests : error " + error);
+        }
+        if (response) {
+            let statusCode = response.status_code;
+            console.log(response)
+        }
+    });
+}
+
+function printLike(name, like, pp){
+    let options = {
+        uri: "http://[::1]:8000/print-like?name="+name+"&like="+like+"&profile="+pp,
+        method: 'GET',
+    };
+    request(options, function (error, response, body) {
+        if (error) {
+            console.error("httpRequests : error " + error);
+        }
+        if (response) {
+            let statusCode = response.status_code;
+            console.log(response)
+        }
+    });
+}
+
+function printGift(name, giftName, giftCount, pp){
+    let options = {
+        uri: "http://[::1]:8000/print-like?name="+name+"&giftname="+giftName+"&giftcount="+giftCount+"&profile="+pp,
+        method: 'GET',
+    };
+    request(options, function (error, response, body) {
+        if (error) {
+            console.error("httpRequests : error " + error);
+        }
+        if (response) {
+            let statusCode = response.status_code;
+            console.log(response)
+        }
+    });
+}
+
+function printLike(name, like){
+    let options = {
+        uri: "http://[::1]:8000/print-chat?name="+name+"&chat="+chat,
         method: 'GET',
     
     };
@@ -75,13 +124,16 @@ io.on('connection', (socket) => {
         thisConnection.on('member', msg => socket.emit('member', msg));
         thisConnection.on('chat', msg => {
             socket.emit('chat', msg)
-            console.log(msg);
+            printChat(msg.nickname, msg.comment, msg.profilePictureUrl)
         });
-        thisConnection.on('gift', msg => socket.emit('gift', msg));
+        thisConnection.on('gift', msg => {
+            socket.emit('gift', msg)
+            printGift(msg.nickname, msg.extendedGiftInfo.name, msg.extendedGiftInfo.diamond_count, msg.profilePictureUrl)
+        });
         thisConnection.on('social', msg => socket.emit('social', msg));
         thisConnection.on('like', msg => {
             socket.emit('like', msg)
-            
+            printLike(msg.nickname, msg.likeCount, msg.profilePictureUrl)
         });
         thisConnection.on('streamEnd', () => socket.emit('streamEnd'));
 
